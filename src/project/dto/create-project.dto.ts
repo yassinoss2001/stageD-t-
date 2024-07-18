@@ -1,4 +1,6 @@
+import { Prop } from '@nestjs/mongoose';
 import { IsString, IsNotEmpty } from 'class-validator';
+import { SchemaTypes, Types } from 'mongoose';
 
 export class CreateProjectDto {
   @IsString()
@@ -20,4 +22,12 @@ export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   file: string;
+
+  
+  @IsString()
+  @IsNotEmpty()
+  category: string;
+
+  @Prop([{type:SchemaTypes.ObjectId,ref:'tasks'}])
+  tasks:Types.ObjectId[]
 }

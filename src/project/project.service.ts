@@ -4,16 +4,20 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Model } from 'mongoose';
 import { IProject } from './interfaces/project.interface';
+import { ICategory } from 'src/categories/interfaces/category.interface';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectModel('projects')
     private projectModel: Model<IProject>,
+    @InjectModel("categories")
+    private categoryModel: Model<ICategory>
   ) {}
 
   async create(createProjectDto: CreateProjectDto): Promise<IProject> {
     const newProject = new this.projectModel(createProjectDto);
+    await this.categoryModel.updateOne({_id:createProjectDto.category},{$push:{projects:newProject._id}})
     return await newProject.save();
   }
 

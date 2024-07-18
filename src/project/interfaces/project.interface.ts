@@ -4,6 +4,9 @@ export interface IProject extends Document{
     readonly etat:string
     readonly duration:string
     readonly file:string
+    readonly category:string
+
+
 
 
 
