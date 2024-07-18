@@ -7,6 +7,9 @@ import { ProjectModule } from './project/project.module';
 import { TypesModule } from './types/types.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { TaskModule } from './task/task.module';
+import { UsersModule } from './users/users.module';
+import { AdminsModule } from './admins/admins.module';
+import { EmployeesModule } from './employees/employees.module';
 
 @Module({
   imports: [
@@ -16,6 +19,9 @@ import { TaskModule } from './task/task.module';
     TypesModule,
     PermissionsModule,
     TaskModule,
+    UsersModule,
+    AdminsModule,
+    EmployeesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
