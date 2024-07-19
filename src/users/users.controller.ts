@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, Query, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -27,7 +27,7 @@ export class UsersController {
   }
 
   @Get()
-  async findAll(@Res() response): Promise<IUser[]> {
+  async findAll(@Res() response) {
     try {
       const usersData = await this.usersService.findAll();
       return response.status(HttpStatus.OK).json({
@@ -44,8 +44,29 @@ export class UsersController {
     }
   }
 
+
+  @Get('by-email')
+  async findOneByEmail(@Res() response , @Query('email') email: string) {
+    try {
+      if (!email) {
+        throw new NotFoundException('Email query parameter is required');
+      }
+      const user = await this.usersService.findOneByEmail(email);
+      return response.status(HttpStatus.OK).json({
+        message: 'User found successfully',
+        status: HttpStatus.OK,
+        data: user
+      });
+    } catch (error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
+        status: HttpStatus.NOT_FOUND,
+        data: null
+      });
+    }
+  }
   @Get(':id')
-  async findOne(@Res() response, @Param('id') id: string): Promise<IUser> {
+  async findOne(@Res() response, @Param('id') id: string){
     try {
       const user = await this.usersService.findOne(id);
       return response.status(HttpStatus.OK).json({
@@ -61,6 +82,11 @@ export class UsersController {
       });
     }
   }
+
+
+
+
+
 
   @Patch(':id')
   async update(@Res() response, @Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

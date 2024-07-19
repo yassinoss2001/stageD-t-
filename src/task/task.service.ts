@@ -15,11 +15,14 @@ export class TaskService {
 
   async create(createTaskDto: CreateTaskDto): Promise<ITask> {
     const newTask = new this.taskModel(createTaskDto);
+    const savedTask = await newTask.save();
+    
     await this.projectModel.updateOne(
       { _id: createTaskDto.project },
-      { $push: { projects: newTask._id } }
+      { $push: { tasks: savedTask._id } }
     );
-    return await newTask.save();
+    
+    return savedTask;
   }
 
   async findAll(): Promise<ITask[]> {
@@ -58,6 +61,8 @@ export class TaskService {
     if (!deletedTask) {
       throw new NotFoundException(`Task with ID ${id} not found`);
     }
+
+    await this.projectModel.updateOne({ _id: deletedTask.project }, { $pull: { tasks: id } });
 
     return deletedTask;
   }

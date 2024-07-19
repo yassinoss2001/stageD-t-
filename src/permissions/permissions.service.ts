@@ -52,13 +52,29 @@ export class PermissionsService {
     return existingPermission;
   }
   
-  async remove(id: string) {
+  async remove(id: string): Promise<IPermission> {
     const deletedPermission = await this.permissionsModel.findByIdAndDelete(id).exec();
 
     if (!deletedPermission) {
       throw new NotFoundException(`Permission with ID ${id} not found`);
     }
 
+    await this.typeModel.updateOne(
+      { _id: deletedPermission.type },
+      { $pull: { permissions: id } }
+    );
+
     return deletedPermission;
   }
+
+  async findByType(typeId: string): Promise<IPermission[]> {
+    const permissions = await this.permissionsModel.find({ type: typeId }).exec();
+
+    if (!permissions || permissions.length === 0) {
+      throw new NotFoundException(`No permissions found for type with ID ${typeId}`);
+    }
+
+    return permissions;
+  }
+
 }

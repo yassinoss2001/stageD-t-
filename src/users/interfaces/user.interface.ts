@@ -7,8 +7,4 @@ export interface IUser extends Document{
     readonly password:string
 
 
-
-
-
-
 }

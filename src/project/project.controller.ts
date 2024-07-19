@@ -44,7 +44,7 @@ export class ProjectController {
   }
 
   @Get()
-  async findAll(@Res() response): Promise<IProject[]> {
+  async findAll(@Res() response){
     try {
       const projectsData = await this.projectService.findAll();
       return response.status(HttpStatus.OK).json({
@@ -62,7 +62,7 @@ export class ProjectController {
   }
 
   @Get(':id')
-  async findOne(@Res() response, @Param('id') id: string): Promise<IProject> {
+  async findOne(@Res() response, @Param('id') id: string) {
     try {
       const project = await this.projectService.findOne(id);
       return response.status(HttpStatus.OK).json({
@@ -127,4 +127,23 @@ export class ProjectController {
       });
     }
   }
+
+  @Get('category/:categoryId')
+  async findProjectsByCategory(@Res() response, @Param('categoryId') categoryId: string) {
+    try {
+      const projects = await this.projectService.findProjectsByCategory(categoryId);
+      return response.status(HttpStatus.OK).json({
+        message: 'Projects found successfully',
+        status: HttpStatus.OK,
+        data: projects
+      });
+    } catch (error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
+        status: HttpStatus.NOT_FOUND,
+        data: null
+      });
+    }
+  }
+
 }

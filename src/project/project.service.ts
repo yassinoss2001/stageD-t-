@@ -58,6 +58,26 @@ export class ProjectService {
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
 
+    await this.categoryModel.updateOne({ _id: deletedProject.category }, { $pull: { projects: id } });
+
     return deletedProject;
   }
+
+  async findProjectsByCategory(categoryId: string): Promise<IProject[]> {
+    const categoryExists = await this.categoryModel.exists({ _id: categoryId }).exec();
+
+    if (!categoryExists) {
+      throw new NotFoundException(`Category with ID ${categoryId} not found`);
+    }
+
+    const projects = await this.projectModel.find({ category: categoryId }).exec();
+
+    if (!projects || projects.length === 0) {
+      throw new NotFoundException(`No projects found for category with ID ${categoryId}`);
+    }
+
+    return projects;
+  }
+
+
 }

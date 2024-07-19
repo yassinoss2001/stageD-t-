@@ -27,7 +27,7 @@ export class PermissionsController {
   }
 
   @Get()
-  async findAll(@Res() response): Promise<IPermission[]> {
+  async findAll(@Res() response) {
     try {
       const permissionsData = await this.permissionsService.findAll();
       return response.status(HttpStatus.OK).json({
@@ -45,7 +45,7 @@ export class PermissionsController {
   }
 
   @Get(':id')
-  async findOne(@Res() response, @Param('id') id: string): Promise<IPermission> {
+  async findOne(@Res() response, @Param('id') id: string) {
     try {
       const permission = await this.permissionsService.findOne(id);
       return response.status(HttpStatus.OK).json({
@@ -97,4 +97,23 @@ export class PermissionsController {
       });
     }
   }
+
+  @Get('by-type/:typeId')
+  async findByType(@Res() response, @Param('typeId') typeId: string) {
+    try {
+      const permissions = await this.permissionsService.findByType(typeId);
+      return response.status(HttpStatus.OK).json({
+        message: 'Permissions found successfully',
+        status: HttpStatus.OK,
+        data: permissions,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
+        status: HttpStatus.NOT_FOUND,
+        data: null,
+      });
+    }
+  }
+
 }
