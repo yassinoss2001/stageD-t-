@@ -10,6 +10,9 @@ import { TaskModule } from './task/task.module';
 import { UsersModule } from './users/users.module';
 import { AdminsModule } from './admins/admins.module';
 import { EmployeesModule } from './employees/employees.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersService } from './users/users.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { EmployeesModule } from './employees/employees.module';
     UsersModule,
     AdminsModule,
     EmployeesModule,
+    AuthModule,
+    UsersModule,
+    ConfigModule.forRoot({isGlobal:true})
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,8 +3,11 @@ import { TypesService } from './types.service';
 import { CreateTypeDto } from './dto/create-type.dto';
 import { UpdateTypeDto } from './dto/update-type.dto';
 import { IType } from './interfaces/type.interface';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('types')
+@ApiTags("types")
+
 export class TypesController {
   constructor(private readonly typesService: TypesService) {}
 

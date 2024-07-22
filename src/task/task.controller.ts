@@ -3,8 +3,10 @@ import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { ITask } from './interfaces/task.interface';
+import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
 
 @Controller('task')
+@ApiTags("task")
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
@@ -97,4 +99,23 @@ export class TaskController {
       });
     }
   }
+
+  @Get('by-project/:projectId')
+  async findByProject(@Res() response, @Param('projectId') projectId: string) {
+    try {
+      const tasks = await this.taskService.findByProject(projectId);
+      return response.status(HttpStatus.OK).json({
+        message: 'Tasks found successfully',
+        status: HttpStatus.OK,
+        data: tasks,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
+        status: HttpStatus.NOT_FOUND,
+        data: null,
+      });
+    }
+  }
+
 }

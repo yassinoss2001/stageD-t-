@@ -2,17 +2,34 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } fr
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { IProject } from './interfaces/project.interface';
 import { UploadedFile, UseInterceptors } from '@nestjs/common/decorators';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger/dist/decorators';
 
 @Controller('projects')
+@ApiTags("projects")
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
+  // Swagger API documentation for the file upload request body
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        description: { type: 'string' },
+        etat: { type: 'string' },
+        duration: { type: 'string' },
+        file: { type: 'string' },
+        category: { type: 'string' },
+      },
+    },
+  })
+  // Indicates that this route consumes multipart/form-data
+  @ApiConsumes("multipart/form-data")
 
-
+  // Intercept file uploads and store them using disk storage
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -81,6 +98,24 @@ export class ProjectController {
 
 
 
+
+  // Swagger API documentation for the file upload request body
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        title: { type: 'string' },
+        description: { type: 'string' },
+        etat: { type: 'string' },
+        duration: { type: 'string' },
+        file: { type: 'string' },
+        category: { type: 'string' },
+      },
+    },
+  })
+  // Indicates that this route consumes multipart/form-data
+  @ApiConsumes("multipart/form-data")
+
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -90,6 +125,9 @@ export class ProjectController {
       })
     })
   )
+
+
+
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto , @Res() response,@UploadedFile() file:Express.Multer.File  ) {

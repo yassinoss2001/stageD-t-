@@ -2,9 +2,10 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, Que
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { IUser } from './interfaces/user.interface';
+import { ApiTags } from '@nestjs/swagger/dist';
 
 @Controller('users')
+@ApiTags("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -123,4 +124,23 @@ export class UsersController {
       });
     }
   }
+  @Get('role/:role')
+  async getUserByRole(@Res() response, @Param('role') role: string) {
+    try {
+      const users = await this.usersService.getUserByRole(role);
+      return response.status(HttpStatus.OK).json({
+        message: 'Users found successfully',
+        status: HttpStatus.OK,
+        data: users,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
+        status: HttpStatus.NOT_FOUND,
+        data: null,
+      });
+    }
+  }
+
+
 }

@@ -67,4 +67,15 @@ export class UsersService {
 
     return deletedUser;
   }
+
+  async getUserByRole(role: string): Promise<IUser[]> {
+    const users = await this.userModel.find({ role }).exec();
+
+    if (!users || users.length === 0) {
+      throw new NotFoundException(`No users found with role ${role}`);
+    }
+
+    return users;
+  }
+
 }

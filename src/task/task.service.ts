@@ -66,4 +66,15 @@ export class TaskService {
 
     return deletedTask;
   }
+
+  async findByProject(projectId: string): Promise<ITask[]> {
+    const tasks = await this.taskModel.find({ project: projectId }).exec();
+
+    if (!tasks || tasks.length === 0) {
+      throw new NotFoundException(`No tasks found for project with ID ${projectId}`);
+    }
+
+    return tasks;
+  }
+
 }
