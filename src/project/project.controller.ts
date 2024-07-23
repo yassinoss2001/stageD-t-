@@ -21,7 +21,7 @@ export class ProjectController {
         description: { type: 'string' },
         etat: { type: 'string' },
         duration: { type: 'string' },
-        file: { type: 'string' },
+        file: { type: 'string' , format:"binary"},
         category: { type: 'string' },
       },
     },

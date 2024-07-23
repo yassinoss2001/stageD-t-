@@ -9,12 +9,19 @@ async function bootstrap() {
   .setTitle('PFA project')
   .setDescription('salaries')
 .addTag("users")
+.addTag("auth")
 .addTag("projects")
 .addTag("categories")
 .addTag("permissions")
 .addTag("task")
 .addTag("types")
-
+.addBearerAuth({
+  type: 'http',
+  scheme: 'bearer',
+  name: 'Authorization', // Header name
+  description: 'Enter JWT token', // Description
+  in: 'header', // Location of the token in the request
+})
 
 
 

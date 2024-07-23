@@ -3,6 +3,8 @@ import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
 
+ 
+
 @ApiProperty({
   type:String,
   description:"this is a required field"
@@ -46,7 +48,7 @@ export class CreateUserDto {
   })
   @IsString()
   @IsNotEmpty()
-  asresse: string;
+  adresse: string;
 
   @ApiProperty({
     type:String,
@@ -56,5 +58,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
+  @ApiProperty({
+    type:String,
+    description:"this is a required field"
+  })
+  @IsString()
+  @IsNotEmpty()
+  role: string;
   
 }
