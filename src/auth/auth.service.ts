@@ -4,6 +4,7 @@ import { CreateLoginDto } from './dto/create-login.dto';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -41,7 +42,7 @@ export class AuthService {
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_TOKEN'),
-          expiresIn: '10m'
+          expiresIn: '30d'
         }
       ),
       this.jwtService.signAsync(
@@ -69,8 +70,27 @@ export class AuthService {
     if(!user || !user.refreshToken){
       throw new ForbiddenException('access denied')
     }
+    const refreshTokenMatches=await argon2.verify(user.refreshToken,refreshToken)
+    if(!refreshTokenMatches){
+      throw new ForbiddenException('access denied')}
     const tokens = await this.generateTokens(user._id, user.email);
     await this.updateRefreshToken(user._id , tokens.refreshToken);
     return { user, tokens };
+  }
+
+
+  async logout (userId:string){
+    await this.usersService.update(userId,{refreshToken:null})
+  }
+
+
+  async updateUserProfile(userId: string, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password) {
+      updateUserDto.password = await argon2.hash(updateUserDto.password);
+    }
+    const updatedUser = await this.usersService.update(userId, updateUserDto);
+    const tokens = await this.generateTokens(updatedUser._id, updatedUser.email);
+    await this.updateRefreshToken(updatedUser._id, tokens.refreshToken);
+    return { user: updatedUser, tokens };
   }
 }

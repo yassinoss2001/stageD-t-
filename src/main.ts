@@ -21,8 +21,14 @@ async function bootstrap() {
   name: 'Authorization', // Header name
   description: 'Enter JWT token', // Description
   in: 'header', // Location of the token in the request
-})
-
+},'refresh-token')
+.addBearerAuth({
+  type: 'http',
+  scheme: 'bearer',
+  name: 'Authorization', // Header name
+  description: 'Enter JWT token', // Description
+  in: 'header', // Location of the token in the request
+},'access-token')
 
 
 
