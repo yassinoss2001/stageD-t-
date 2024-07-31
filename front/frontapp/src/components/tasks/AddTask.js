@@ -1,83 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import Select from 'react-select';
 import { Footer } from '../../layouts/Footer';
 import { Navbar } from '../../layouts/Navbar';
-import taskService from '../../services/taskService';
+import Select from 'react-select';
 import projectService from '../../services/projectService';
-import { notification } from 'antd';
+import taskService from '../../services/taskService';
 
 export const AddTask = () => {
-  const [projects, setProjects] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    duration: '',
-    status: ''
-  });
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await projectService.findAllProjects();
-        const projectOptions = response.data.data.map(project => ({
-          value: project.id,
-          label: project.name
-        }));
-        setProjects(projectOptions);
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-      }
-    };
-
-    fetchProjects();
-  }, []);
-
-  const handleProjectChange = (selectedOption) => {
-    setSelectedProject(selectedOption);
-  };
-
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormData({ ...formData, [id]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!selectedProject) {
-      notification.error({
-        message: 'Error',
-        description: 'Please select a project'
-      });
-      return;
-    }
-
-    const taskData = {
-      ...formData,
-      projectId: selectedProject.value
-    };
-
+  const [allProjects, setAllProjects] = useState([]);
+  const fetchProjects = async () => {
     try {
-      await taskService.addTask(taskData);
-      notification.success({
-        message: 'Success',
-        description: 'Task added successfully'
-      });
-      // Optionally, reset the form
-      setFormData({
-        title: '',
-        description: '',
-        duration: '',
-        status: ''
-      });
-      setSelectedProject(null);
-    } catch (error) {
-      notification.error({
-        message: 'Error',
-        description: 'Failed to add task'
-      });
+      const res = await projectService.findAllProjects();
+      setAllProjects(res.data.data);
+    } catch (err) {
+      console.log(err, "errr");
     }
+  };
+
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  useEffect(() => {
+    fetchProjects();
+    setFilteredProjects(
+      allProjects?.map((res) => {
+        return {
+          label: res.name,
+          value: res._id,
+        };
+      })
+    );
+  }, [allProjects]);
+
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("");
+  const [duration, setDuration] = useState("");
+  const [project, setProject] = useState("");
+
+  const taskAdd = () => {
+   
+  let data = {
+    title: name,
+    description: description,
+    status: status,
+    duration: duration,
+    project:project
+  }
+
+    taskService.addTask(data).then((res) => {
+      console.log(data, "dataaaaaaaaaaa");
+      console.log(res, "resssssssss");
+    }).catch((err) => {
+      console.log(err, "resssssssss");
+    });
   };
 
   return (
@@ -105,71 +78,45 @@ export const AddTask = () => {
                   <div className="row">
                     <h2 className='text-center mb-5'>Add a Task</h2>
                     <div id="contactForm" className="contact-form">
-                      <form onSubmit={handleSubmit}>
-                        <div className="col-md-12 col-sm-12 col-xs-12">
-                          <input
-                            type="text"
-                            id="title"
-                            className="form-control"
-                            placeholder="Title"
-                            required
-                            value={formData.title}
-                            onChange={handleInputChange}
-                          />
-                          <div className="help-block with-errors" />
-                        </div>
-                        <div className="col-md-12 col-sm-12 col-xs-12">
-                          <textarea
-                            id="description"
-                            className="form-control"
-                            placeholder="Description"
-                            required
-                            value={formData.description}
-                            onChange={handleInputChange}
-                          />
-                          <div className="help-block with-errors" />
-                        </div>
-                        <div className="col-md-12 col-sm-12 col-xs-12">
-                          <input
-                            type="text"
-                            id="duration"
-                            className="form-control"
-                            placeholder="Duration"
-                            required
-                            value={formData.duration}
-                            onChange={handleInputChange}
-                          />
-                          <div className="help-block with-errors" />
-                        </div>
-                        <div className="col-md-12 col-sm-12 col-xs-12">
-                          <input
-                            type="text"
-                            id="status"
-                            className="form-control"
-                            placeholder="Status"
-                            required
-                            value={formData.status}
-                            onChange={handleInputChange}
-                          />
-                          <div className="help-block with-errors" />
-                        </div>
-                        <div className="col-md-12 col-sm-12 col-xs-12">
-                          <Select
-                            id="project"
-                            options={projects}
-                            onChange={handleProjectChange}
-                            placeholder="Select Project"
-                            value={selectedProject}
-                            required
-                          />
-                          <div className="help-block with-errors" />
-                        </div>
-                        <div className="col-md-12 col-sm-12 col-xs-12 text-center">
-                          <button type="submit" id="submit" className="add-btn contact-btn">Add Task</button>
-                          <div id="msgSubmit" className="h3 text-center hidden" />
-                          <div className="clearfix" />
-                        </div>
-                      </form>
+                      <div className="col-md-12 col-sm-12 col-xs-12">
+                        <input type="text" id="task_name"
+                          onChange={(e) => setName(e.target.value)} className="form-control" placeholder="Task Name" required data-error="Please enter the task name" />
+                        <div className="help-block with-errors" />
+                      </div>
+                      <div className="col-md-12 col-sm-12 col-xs-12">
+                        <textarea id="description"
+                          onChange={(e) => setDescription(e.target.value)} className="form-control" placeholder="Description" required data-error="Please enter the task description" />
+                        <div className="help-block with-errors" />
+                      </div>
+                      <div className="col-md-12 col-sm-12 col-xs-12">
+                        <select
+                          className="form-control"
+                          onChange={(e) => setStatus(e.target.value)}
+                        >
+                          <option value="" disabled>Select status</option>
+                          <option value="in progress">in progress</option>
+                          <option value="completed">completed</option>
+                        </select>
+                        <div className="help-block with-errors" />
+                      </div>
+                      <div className="col-md-12 col-sm-12 col-xs-12">
+                        <input type="text"
+                          onChange={(e) => setDuration(e.target.value)}
+                          id="duration" className="form-control" placeholder="Duration" required data-error="Please enter the task duration" />
+                        <div className="help-block with-errors" />
+                      </div>
+                      <div className="col-md-12 col-sm-12 col-xs-12">
+                        <Select
+                          options={filteredProjects}
+                          onChange={(e) => setProject(e?.value)}
+                        />
+                        <div className="help-block with-errors" />
+                      </div>
+                      <div className="col-md-12 col-sm-12 col-xs-12 text-center">
+                        <button type="submit" onClick={taskAdd} id="submit" className="add-btn contact-btn">Add Task</button>
+                        <div id="msgSubmit" className="h3 text-center hidden" />
+                        <div className="clearfix" />
+                      </div>
                     </div>
                   </div>
                 </div>

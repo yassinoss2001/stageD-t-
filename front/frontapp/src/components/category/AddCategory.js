@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Footer } from '../../layouts/Footer';
 import { Navbar } from '../../layouts/Navbar';
 import catergoryService from '../../services/catergoryService';
+import { notification } from 'antd';
 
 export const AddCategory = () => {
   const [categoryName, setCategoryName] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
 
   const handleInputChange = (e) => {
     setCategoryName(e.target.value);
@@ -16,10 +16,17 @@ export const AddCategory = () => {
     if (categoryName) {
       try {
         await catergoryService.addCategory({ name: categoryName });
-        setSuccessMessage('Category added successfully');
+        notification.success({
+          message: 'Success',
+          description: 'Category added successfully',
+        });
         setCategoryName(''); // Optionally clear the input field
       } catch (error) {
         console.error('Error adding category:', error);
+        notification.error({
+          message: 'Error',
+          description: 'Failed to add category',
+        });
       }
     }
   };
@@ -64,11 +71,6 @@ export const AddCategory = () => {
                       </div>
                       <div className="col-md-12 col-sm-12 col-xs-12 text-center">
                         <button type="submit" id="submit" className="add-btn contact-btn">Add</button>
-                        {successMessage && (
-                          <div id="msgSubmit" className="h3 text-center text-success mt-3">
-                            {successMessage}
-                          </div>
-                        )}
                         <div className="clearfix" />
                       </div>
                     </form>

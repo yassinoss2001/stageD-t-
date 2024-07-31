@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Navbar } from '../../layouts/Navbar'
 import projectService from '../../services/projectService';
 import { EditOutlined , DeleteOutlined   } from '@ant-design/icons';
+import Swal from 'sweetalert2'
 
 
 export const ListProject = () => {
@@ -22,7 +23,15 @@ export const ListProject = () => {
     fetchProjects()
   }, [])
   
-   
+   const deleteProject = (id)=>{
+    projectService.deleteProject(id).then((res)=>{
+      let arr = [...allProjects]
+      setAllProjects(arr.filter(p=>p._id !== id))
+    }).catch((err)=>{
+      console.log(err,"err")
+    
+    })
+   }
         
         const columns = [
           {
@@ -77,7 +86,31 @@ dataIndex: 'category',
           {
             title: 'Delete',
             render:(text,record)=>(
-              <Button type="primary" shape="circle" icon={<DeleteOutlined /> }  />
+              <Button type="primary" shape="circle" icon={<DeleteOutlined /> } 
+              
+              onClick={
+                ()=>{
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      deleteProject(record?._id)
+                      Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                      });
+                    }
+                  });
+                }
+              }
+              />
               )
           },
         ];
