@@ -1,83 +1,147 @@
-import React from 'react'
-import { Footer } from '../../layouts/Footer'
-import { Navbar } from '../../layouts/Navbar'
+import React, { useState, useEffect } from 'react';
+import { Button, Form, Input, DatePicker, Select, notification } from 'antd';
+import { Footer } from '../../layouts/Footer';
+import { Navbar } from '../../layouts/Navbar';
+import permissionService from '../../services/permissionService';
+import typeService from '../../services/typeService';
+
+const { TextArea } = Input;
+const { Option } = Select;
 
 export const AddPermission = () => {
-  const types = [
-    { id: 1, name: 'Type A' },
-    { id: 2, name: 'Type B' },
-    { id: 3, name: 'Type C' }
-  ];
+  const [form] = Form.useForm();
+  const [types, setTypes] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchTypes = async () => {
+      try {
+        const res = await typeService.findAllTypes();
+        setTypes(res.data.data);
+      } catch (err) {
+        console.error("Error fetching types:", err);
+      }
+    };
+
+    fetchTypes();
+  }, []);
+
+  const handleSubmit = async (values) => {
+    setLoading(true);
+    try {
+      await permissionService.addPermission({
+        reason: values.reason,
+        dateDeb: values.dateDeb.format('YYYY-MM-DD'),
+        dateFin: values.dateFin.format('YYYY-MM-DD'),
+        status: values.status,
+        type: values.type,
+      });
+      notification.success({
+        message: 'Success',
+        description: 'Permission added successfully',
+      });
+      form.resetFields();
+    } catch (err) {
+      notification.error({
+        message: 'Error',
+        description: 'Failed to add permission',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-      <Navbar/>
-      <div>
-        <div className="page-area">
-          <div className="breadcumb-overlay" />
-          <div className="container">
-            <div className="row">
-              <div className="col-md-12 col-sm-12 col-xs-12">
-                <div className="breadcrumb text-center">
-                </div>
+      <Navbar />
+      <div className="page-area">
+        <div className="breadcumb-overlay" />
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12 col-sm-12 col-xs-12">
+              <div className="breadcrumb text-center">
               </div>
-            </div>
-          </div>
-        </div>
-        {/* End breadcumb Area */}
-        {/* Start contact Area */}
-        <div className="contact-area page-padding">
-          <div className="container">
-            <div className="row">
-              <div className="col-md-12 col-sm-12 col-xs-12">
-                <div className="contact-form">
-                  <div className="row">
-                    <h2 className='text-center mb-5'>Add a Permission</h2>
-                    <div id="contactForm" className="contact-form">
-                      <div className="col-md-12 col-sm-12 col-xs-12">
-                        <input type="file" id="file" className="form-control" required data-error="Please upload a file" />
-                        <div className="help-block with-errors" />
-                      </div>
-                      <div className="col-md-12 col-sm-12 col-xs-12">
-                        <textarea id="reason" className="form-control" placeholder="Reason" required data-error="Please enter the reason" />
-                        <div className="help-block with-errors" />
-                      </div>
-                      <div className="col-md-12 col-sm-12 col-xs-12">
-                        <input type="date" id="dateDeb" className="form-control" placeholder="Start Date" required data-error="Please enter the start date" />
-                        <div className="help-block with-errors" />
-                      </div>
-                      <div className="col-md-12 col-sm-12 col-xs-12">
-                        <input type="date" id="dateFin" className="form-control" placeholder="End Date" required data-error="Please enter the end date" />
-                        <div className="help-block with-errors" />
-                      </div>
-                      <div className="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text" id="status" className="form-control" placeholder="Status" required data-error="Please enter the status" />
-                        <div className="help-block with-errors" />
-                      </div>
-                      <div className="col-md-12 col-sm-12 col-xs-12">
-                        <select id="type" className="form-control" required data-error="Please select a type">
-                          <option value="">Select Type</option>
-                          {types.map(type => (
-                            <option key={type.id} value={type.id}>{type.name}</option>
-                          ))}
-                        </select>
-                        <div className="help-block with-errors" />
-                      </div>
-                      <div className="col-md-12 col-sm-12 col-xs-12 text-center">
-                        <button type="submit" id="submit" className="add-btn contact-btn">Add Permission</button>
-                        <div id="msgSubmit" className="h3 text-center hidden" />
-                        <div className="clearfix" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* End Left contact */}
             </div>
           </div>
         </div>
       </div>
-      <Footer/>
+      {/* End breadcrumb Area */}
+      {/* Start contact Area */}
+      <div className="contact-area page-padding">
+        <div className="container">
+          <div className="row">
+            <div className="col-md-12 col-sm-12 col-xs-12" style={{ marginTop: "40px" }}>
+              <div className="contact-form">
+                <div className="row">
+                  <h2 className="text-center mb-5">Add a Permission</h2>
+                  <div id="contactForm" className="contact-form" style={{ marginTop: "20px" }}>
+                    <Form form={form} onFinish={handleSubmit} layout="vertical">
+                      <Form.Item
+                        name="reason"
+                        label="Reason"
+                        rules={[{ required: true, message: 'Please enter the reason' }]}
+                      >
+                        <TextArea
+                          rows={4}
+                          placeholder="Reason"
+                        />
+                      </Form.Item>
+                      <Form.Item
+                        name="dateDeb"
+                        label="Start Date"
+                        rules={[{ required: true, message: 'Please select the start date' }]}
+                      >
+                        <DatePicker format="YYYY-MM-DD" />
+                      </Form.Item>
+                      <Form.Item
+                        name="dateFin"
+                        label="End Date"
+                        rules={[{ required: true, message: 'Please select the end date' }]}
+                      >
+                        <DatePicker format="YYYY-MM-DD" />
+                      </Form.Item>
+                      <Form.Item
+                        name="status"
+                        label="Status"
+                        rules={[{ required: true, message: 'Please enter the status' }]}
+                      >
+                        <Input placeholder="Status" />
+                      </Form.Item>
+                      <Form.Item
+                        name="type"
+                        label="Type"
+                        rules={[{ required: true, message: 'Please select a type' }]}
+                      >
+                        <Select
+                          placeholder="Select Type"
+                          allowClear
+                        >
+                          {types.map(type => (
+                            <Option key={type._id} value={type._id}>
+                              {type.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                      <Form.Item>
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          loading={loading}
+                        >
+                          Add Permission
+                        </Button>
+                      </Form.Item>
+                    </Form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* End Left contact */}
+          </div>
+        </div>
+      </div>
+      <Footer />
     </>
-  )
-}
+  );
+};

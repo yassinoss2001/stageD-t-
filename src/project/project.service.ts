@@ -22,7 +22,7 @@ export class ProjectService {
   }
 
   async findAll(): Promise<IProject[]> {
-    const projectsData = await this.projectModel.find().exec();
+    const projectsData = await this.projectModel.find().populate('category').exec();
 
     if (!projectsData || projectsData.length === 0) {
       throw new NotFoundException('Projects not found');

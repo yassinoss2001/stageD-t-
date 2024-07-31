@@ -26,7 +26,7 @@ export class TaskService {
   }
 
   async findAll(): Promise<ITask[]> {
-    const tasksData = await this.taskModel.find().exec();
+    const tasksData = await this.taskModel.find().populate('project').exec();
 
     if (!tasksData || tasksData.length === 0) {
       throw new NotFoundException('Tasks not found');

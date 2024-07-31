@@ -1,4 +1,4 @@
-import { Button, Table } from 'antd';
+import { Button, Table, notification } from 'antd';
 import { Footer } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react';
 import { Navbar } from '../../layouts/Navbar';
@@ -11,11 +11,25 @@ export const ListEmployee = () => {
   const fetchEmployees = async () => {
     try {
       const res = await employeeService.findAllEmployees();
-      const employees = res.data.data;
-      const filteredEmployees = employees.filter(employee => employee.role === 'Employee');
-      setAllEmployees(filteredEmployees);
+      setAllEmployees(res.data.data);
     } catch (err) {
       console.log(err, "errr");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await employeeService.deleteEmployee(id);
+      notification.success({
+        message: 'Success',
+        description: 'Employee deleted successfully',
+      });
+      fetchEmployees();
+    } catch (err) {
+      notification.error({
+        message: 'Error',
+        description: 'Failed to delete employee',
+      });
     }
   };
 
@@ -24,7 +38,11 @@ export const ListEmployee = () => {
   }, []);
 
   const columns = [
- 
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+    },
     {
       title: 'Name',
       dataIndex: 'firstName',
@@ -59,7 +77,12 @@ export const ListEmployee = () => {
     {
       title: 'Delete',
       render: (text, record) => (
-        <Button type="primary" shape="circle" icon={<DeleteOutlined />} />
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<DeleteOutlined />}
+          onClick={() => handleDelete(record._id)}
+        />
       ),
     },
   ];
@@ -75,8 +98,8 @@ export const ListEmployee = () => {
                 <div className="contact-form">
                   <div className="row">
                     <h2 className='text-center mb-5'>List Employees</h2>
-                    <div id="contactForm" className="contact-form " style={{ marginTop: "20px" }}>
-                      <Table dataSource={allEmployees} columns={columns} />
+                    <div id="contactForm" className="contact-form" style={{ marginTop: "20px" }}>
+                      <Table dataSource={allEmployees} columns={columns} rowKey="_id" />
                     </div>
                   </div>
                 </div>

@@ -52,8 +52,14 @@ export const ListProject = () => {
           },
           {
             title: 'Category',
-            dataIndex: 'category',
-            key: 'name',
+dataIndex: 'category',
+            render:(text,record)=>{
+              console.log(record,"recooorrrrd")
+
+              return <>{record?.category?.name}</>
+            }
+             
+            
           },
           {
             title: 'Tasks',

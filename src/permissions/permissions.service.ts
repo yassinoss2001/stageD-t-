@@ -23,7 +23,7 @@ export class PermissionsService {
   }
 
   async findAll(): Promise<IPermission[]> {
-    const permissionsData = await this.permissionsModel.find().exec();
+    const permissionsData = await this.permissionsModel.find().populate('type').exec();
     
     if (!permissionsData || permissionsData.length === 0) {
       throw new NotFoundException('Permissions not found');

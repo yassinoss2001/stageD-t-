@@ -29,13 +29,13 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/add-category" element={<AddCategory />} />
-        <Route path="/add-permission" element={<AddPermission />} />
+        <Route path="/add-categories" element={<AddCategory />} />
+        <Route path="/add-permissions" element={<AddPermission />} />
         <Route path="/about" element={<About />} />
-        <Route path="/add-project" element={<AddProject />} />
+        <Route path="/add-projects" element={<AddProject />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/project" element={<Project />} />
-        <Route path="/add-task" element={<AddTask />} />
+        <Route path="/add-tasks" element={<AddTask />} />
         <Route path="/add-types" element={<AddTypes />} />
         <Route path="/listcategories" element={<ListCategories />} />
         <Route path="/projects" element={<Project />} />
