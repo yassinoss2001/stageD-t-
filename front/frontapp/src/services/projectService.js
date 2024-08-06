@@ -1,3 +1,5 @@
+// src/services/projectService.js
+
 import axiosApi from "../config/axios";
 
 const PROJECT_ENDPOINT = "/projects";
@@ -14,8 +16,15 @@ const deleteProject = async (id) => {
   return await axiosApi.delete(`${PROJECT_ENDPOINT}/${id}`);
 };
 
-export default {
+const updateProject = async (id, project) => {
+  return await axiosApi.patch(`${PROJECT_ENDPOINT}/${id}`, project);
+};
+
+const projectService = {
   findAllProjects,
   addProject,
-  deleteProject
+  deleteProject,
+  updateProject,
 };
+
+export default projectService;

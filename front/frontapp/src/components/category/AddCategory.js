@@ -3,6 +3,7 @@ import { Footer } from '../../layouts/Footer';
 import { Navbar } from '../../layouts/Navbar';
 import catergoryService from '../../services/catergoryService';
 import { notification } from 'antd';
+import Swal from 'sweetalert2';
 
 export const AddCategory = () => {
   const [categoryName, setCategoryName] = useState('');
@@ -16,9 +17,12 @@ export const AddCategory = () => {
     if (categoryName) {
       try {
         await catergoryService.addCategory({ name: categoryName });
-        notification.success({
-          message: 'Success',
-          description: 'Category added successfully',
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Category has been saved",
+          showConfirmButton: false,
+          timer: 1500
         });
         setCategoryName(''); // Optionally clear the input field
       } catch (error) {

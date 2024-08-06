@@ -14,4 +14,9 @@ const deletePermission = async (id) => {
   return await axiosApi.delete(`${PERMISSION_ENDPOINT}/${id}`);
 };
 
-export default { findAllPermissions, addPermission, deletePermission };
+// Add the updatePermission function
+const updatePermission = async (id, permission) => {
+  return await axiosApi.patch(`${PERMISSION_ENDPOINT}/${id}`, permission);
+};
+
+export default { findAllPermissions, addPermission, deletePermission, updatePermission };

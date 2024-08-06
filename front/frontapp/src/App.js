@@ -10,13 +10,14 @@ import { AddTypes } from "./components/types/AddTypes";
 import { Login } from "./components/auth/Login";
 import { Home } from "./components/Home";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ProjectList } from "./components/projects/ProjectList";
 import { ListCategories } from "./components/category/ListCategories";
 import { ListPermission } from "./components/permissions/ListPermission";
 import { ListProject } from "./components/projects/ListProject";
 import { ListTask } from "./components/tasks/ListTask";
 import { ListType } from "./components/types/ListType";
 import { ListEmployee } from "./components/employee/ListEmployee";
+import ProfileInfo from "./components/auth/ProfileInfo"; // Default import
+
 
 
 
@@ -44,6 +45,8 @@ function App() {
         <Route path="/listtasks" element={<ListTask />} />
         <Route path="/listtypes" element={<ListType />} />
         <Route path="/listemployee" element={<ListEmployee />} />
+        <Route path="/profileinfo" element={<ProfileInfo />} /> {/* Use lowercase route path */}
+
 
 
 

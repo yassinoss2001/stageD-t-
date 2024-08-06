@@ -54,7 +54,9 @@ export const AddProject = () => {
           showConfirmButton: false,
           timer: 1500
         });
+      
       }
+    
     }).catch((err) => {
       console.log(err, "resssssssss")
       Swal.fire({

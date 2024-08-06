@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Input, DatePicker, Select, notification } from 'antd';
+import { Button, Form, Input, DatePicker, Select } from 'antd';
+import Swal from 'sweetalert2';  // Import SweetAlert2
 import { Footer } from '../../layouts/Footer';
 import { Navbar } from '../../layouts/Navbar';
 import permissionService from '../../services/permissionService';
@@ -36,15 +37,21 @@ export const AddPermission = () => {
         status: values.status,
         type: values.type,
       });
-      notification.success({
-        message: 'Success',
-        description: 'Permission added successfully',
+      Swal.fire({
+        title: 'Success',
+        text: 'Permission added successfully',
+        icon: 'success',
+        timer: 1500, // Auto-dismiss after 1.5 seconds
+        showConfirmButton: false, // Hide the confirm button
       });
       form.resetFields();
     } catch (err) {
-      notification.error({
-        message: 'Error',
-        description: 'Failed to add permission',
+      Swal.fire({
+        title: 'Error',
+        text: 'Failed to add permission',
+        icon: 'error',
+        timer: 1500, // Auto-dismiss after 1.5 seconds
+        showConfirmButton: false, // Hide the confirm button
       });
     } finally {
       setLoading(false);

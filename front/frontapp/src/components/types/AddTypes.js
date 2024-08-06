@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Footer } from '../../layouts/Footer';
 import { Navbar } from '../../layouts/Navbar';
 import typeService from '../../services/typeService';
+import Swal from 'sweetalert2';
 
 export const AddTypes = () => {
   const [name, setName] = useState('');
@@ -14,6 +15,11 @@ export const AddTypes = () => {
     setSuccess('');
     if (name.trim() === '') {
       setError('Please enter the type name');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Please enter the type name',
+      });
       return;
     }
 
@@ -21,8 +27,20 @@ export const AddTypes = () => {
       await typeService.addType({ name });
       setSuccess('Type added successfully');
       setName(''); // Clear the input field
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Type added successfully',
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } catch (err) {
       setError('Failed to add type');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to add type',
+      });
     }
   };
 

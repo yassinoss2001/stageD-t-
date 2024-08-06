@@ -4,9 +4,11 @@ import { Navbar } from '../../layouts/Navbar';
 import Select from 'react-select';
 import projectService from '../../services/projectService';
 import taskService from '../../services/taskService';
+import Swal from 'sweetalert2';
 
 export const AddTask = () => {
   const [allProjects, setAllProjects] = useState([]);
+
   const fetchProjects = async () => {
     try {
       const res = await projectService.findAllProjects();
@@ -17,8 +19,12 @@ export const AddTask = () => {
   };
 
   const [filteredProjects, setFilteredProjects] = useState([]);
+
   useEffect(() => {
     fetchProjects();
+  }, []);
+
+  useEffect(() => {
     setFilteredProjects(
       allProjects?.map((res) => {
         return {
@@ -35,22 +41,31 @@ export const AddTask = () => {
   const [duration, setDuration] = useState("");
   const [project, setProject] = useState("");
 
-  const taskAdd = () => {
-   
-  let data = {
-    title: name,
-    description: description,
-    status: status,
-    duration: duration,
-    project:project
-  }
+  const taskAdd = async () => {
+    let data = {
+      title: name,
+      description: description,
+      status: status,
+      duration: duration,
+      project: project,
+    };
 
-    taskService.addTask(data).then((res) => {
+    try {
+      const res = await taskService.addTask(data);
       console.log(data, "dataaaaaaaaaaa");
       console.log(res, "resssssssss");
-    }).catch((err) => {
+      if(res.status===201){
+
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Task has been added successfully",
+        showConfirmButton: false,
+        timer: 1500,
+      });}
+    } catch (err) {
       console.log(err, "resssssssss");
-    });
+    }
   };
 
   return (
@@ -79,13 +94,26 @@ export const AddTask = () => {
                     <h2 className='text-center mb-5'>Add a Task</h2>
                     <div id="contactForm" className="contact-form">
                       <div className="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text" id="task_name"
-                          onChange={(e) => setName(e.target.value)} className="form-control" placeholder="Task Name" required data-error="Please enter the task name" />
+                        <input 
+                          type="text" 
+                          id="task_name"
+                          onChange={(e) => setName(e.target.value)} 
+                          className="form-control" 
+                          placeholder="Task Name" 
+                          required 
+                          data-error="Please enter the task name" 
+                        />
                         <div className="help-block with-errors" />
                       </div>
                       <div className="col-md-12 col-sm-12 col-xs-12">
-                        <textarea id="description"
-                          onChange={(e) => setDescription(e.target.value)} className="form-control" placeholder="Description" required data-error="Please enter the task description" />
+                        <textarea 
+                          id="description"
+                          onChange={(e) => setDescription(e.target.value)} 
+                          className="form-control" 
+                          placeholder="Description" 
+                          required 
+                          data-error="Please enter the task description" 
+                        />
                         <div className="help-block with-errors" />
                       </div>
                       <div className="col-md-12 col-sm-12 col-xs-12">
@@ -100,9 +128,15 @@ export const AddTask = () => {
                         <div className="help-block with-errors" />
                       </div>
                       <div className="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text"
+                        <input 
+                          type="text"
                           onChange={(e) => setDuration(e.target.value)}
-                          id="duration" className="form-control" placeholder="Duration" required data-error="Please enter the task duration" />
+                          id="duration" 
+                          className="form-control" 
+                          placeholder="Duration" 
+                          required 
+                          data-error="Please enter the task duration" 
+                        />
                         <div className="help-block with-errors" />
                       </div>
                       <div className="col-md-12 col-sm-12 col-xs-12">

@@ -1,12 +1,16 @@
-import { Button, Table, notification } from 'antd';
-import { Footer } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react';
+import { Button, Table, Modal, Form, Input, notification } from 'antd';
+import { Footer } from 'antd/es/layout/layout';
 import { Navbar } from '../../layouts/Navbar';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import typeService from '../../services/typeService';
+import Swal from 'sweetalert2';
 
 export const ListType = () => {
   const [allTypes, setAllTypes] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentType, setCurrentType] = useState(null);
+  const [form] = Form.useForm();
 
   const fetchTypes = async () => {
     try {
@@ -18,18 +22,56 @@ export const ListType = () => {
   };
 
   const handleDelete = async (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await typeService.deleteType(id);
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Type deleted successfully',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          fetchTypes();
+        } catch (err) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to delete type',
+          });
+        }
+      }
+    });
+  };
+
+  const handleEdit = (record) => {
+    setCurrentType(record);
+    form.setFieldsValue(record);
+    setIsModalOpen(true);
+  };
+
+  const handleUpdate = async (values) => {
     try {
-      await typeService.deleteType(id);
+      await typeService.updateType(currentType._id, values);
       notification.success({
         message: 'Success',
-        description: 'Type deleted successfully',
+        description: 'Type updated successfully',
       });
-      // Refresh the list after deletion
       fetchTypes();
+      setIsModalOpen(false);
     } catch (err) {
       notification.error({
         message: 'Error',
-        description: 'Failed to delete type',
+        description: 'Failed to update type',
       });
     }
   };
@@ -47,7 +89,7 @@ export const ListType = () => {
     {
       title: 'Update',
       render: (text, record) => (
-        <Button type="primary" shape="circle" icon={<EditOutlined />} />
+        <Button type="primary" shape="circle" icon={<EditOutlined />} onClick={() => handleEdit(record)} />
       )
     },
     {
@@ -85,6 +127,30 @@ export const ListType = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        title="Update Type"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsModalOpen(false)}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary" onClick={() => form.submit()}>
+            Update
+          </Button>,
+        ]}
+      >
+        <Form form={form} onFinish={handleUpdate} layout="vertical">
+          <Form.Item
+            name="name"
+            label="Type Name"
+            rules={[{ required: true, message: 'Please enter the type name' }]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
       <Footer />
     </>
   );

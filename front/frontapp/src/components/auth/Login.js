@@ -1,7 +1,46 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import authService from '../../services/authService'; // Import the service
+import Swal from 'sweetalert2'; // Import SweetAlert2
+
 
 export const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  
+
+  const signin=()=>{
+    let data={
+      email:email,
+      password:password,
+    }
+    authService.login(data).then((res)=>{
+        console.log(res , "resss***");
+        if(res.status === 201){
+          localStorage.setItem("user" , JSON.stringify(res.data))
+
+          navigate("/project")
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "You are  logged",
+            showConfirmButton: false,
+            timer: 1500
+          });
+        }
+    }).catch((err)=>{
+        console.log(err , "err");
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: `${err.message}`,
+          showConfirmButton: false,
+          timer: 1500
+        });
+    })
+  }
   return (
     <>
       <div>
@@ -33,42 +72,34 @@ export const Login = () => {
                   <div className="login-form">
                     <h4 className="login-title">LOGIN</h4>
                     <div className="row">
-                      <form
+                      <div
                         id="contactForm"
-                        method="POST"
-                        action="http://rockstheme.com/rocks/aievari-live/contact.php"
                         className="log-form"
                       >
                         <div className="col-md-12 col-sm-12 col-xs-12">
                           <input
-                            type="text"
-                            id="name"
+                            type="email"
+                            onChange={(e) => setEmail(e.target.value)}
                             className="form-control"
-                            placeholder="Username"
+                            placeholder="Email"
                             required
-                            data-error="Please enter your username"
                           />
                         </div>
                         <div className="col-md-12 col-sm-12 col-xs-12">
                           <input
                             type="password"
-                            id="msg_subject"
+                            onChange={(e) => setPassword(e.target.value)}
                             className="form-control"
                             placeholder="Password"
                             required
-                            data-error="Please enter your password"
                           />
-                        </div>
-                        <div className="col-md-12 col-sm-12 col-xs-12">
-                          <a className="text-muted" href="#">
-                         
-                          </a>
                         </div>
                         <div className="col-md-12 col-sm-12 col-xs-12">
                           <button
                             type="submit"
                             id="submit"
                             className="login-btn"
+                            onClick={signin}
                           >
                             Login
                           </button>
@@ -87,7 +118,7 @@ export const Login = () => {
                             <Link to="/signup">Sign up</Link>
                           </div>
                         </div>
-                      </form>
+                      </div>
                     </div>
                   </div>
                 </div>

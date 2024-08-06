@@ -14,8 +14,14 @@ const deleteTask = async (id) => {
   return await axiosApi.delete(`${TASK_ENDPOINT}/${id}`);
 };
 
+// Add the updateTask method
+const updateTask = async (id, taskData) => {
+  return await axiosApi.patch(`${TASK_ENDPOINT}/${id}`, taskData);
+};
+
 export default {
   findAllTasks,
   addTask,
-  deleteTask
+  deleteTask,
+  updateTask,
 };
