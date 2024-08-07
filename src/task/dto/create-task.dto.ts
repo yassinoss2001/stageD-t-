@@ -1,45 +1,28 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsString ,IsNotEmpty} from "class-validator";
+import { IsNotEmpty, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateTaskDto {
-
-  @ApiProperty({
-    type:String,
-    description:"this is a required field"
-  })
-    @IsString()
-    @IsNotEmpty()
-    title:string
-
-@ApiProperty({
-  type:String,
-  description:"this is a required field"
-})
-    @IsString()
-    @IsNotEmpty()
-    description:string
-
-@ApiProperty({
-  type:String,
-  description:"this is a required field"
-})
-    @IsString()
-    @IsNotEmpty()
-    duration:string
-
-@ApiProperty({
-  type:String,
-  description:"this is a required field"
-})
-    @IsString()
-    @IsNotEmpty()
-    status:string
-
-@ApiProperty({
-  type:String,
-  description:"this is a required field"
-})
-    @IsString()
   @IsNotEmpty()
-  project: string;
+  @IsString()
+  readonly title: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly description: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly duration: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly status: string;
+
+  @IsNotEmpty()
+  readonly project: Types.ObjectId;
+
+  @IsNotEmpty() 
+  readonly user: Types.ObjectId;
+
+  
 }

@@ -9,6 +9,9 @@ import { ApiTags } from '@nestjs/swagger/dist';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+
+ 
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Res() response) {
     try {
@@ -23,6 +26,24 @@ export class UsersController {
         message: error.message,
         status: HttpStatus.BAD_REQUEST,
         data: null
+      });
+    }
+  }
+
+  @Get('role')
+  async getUserByRole(@Res() response, @Query('role') role: string) {
+    try {
+      const users = await this.usersService.getUserByRole(role);
+      return response.status(HttpStatus.OK).json({
+        message: 'Users found successfully',
+        status: HttpStatus.OK,
+        data: users,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
+        status: HttpStatus.NOT_FOUND,
+        data: null,
       });
     }
   }
@@ -124,23 +145,7 @@ export class UsersController {
       });
     }
   }
-  @Get('role/:role')
-  async getUserByRole(@Res() response, @Param('role') role: string) {
-    try {
-      const users = await this.usersService.getUserByRole(role);
-      return response.status(HttpStatus.OK).json({
-        message: 'Users found successfully',
-        status: HttpStatus.OK,
-        data: users,
-      });
-    } catch (error) {
-      return response.status(HttpStatus.NOT_FOUND).json({
-        message: error.message,
-        status: HttpStatus.NOT_FOUND,
-        data: null,
-      });
-    }
-  }
+
 
 
 }

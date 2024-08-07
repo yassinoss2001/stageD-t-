@@ -7,7 +7,9 @@ import { IUser } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel('users') private userModel: Model<IUser>) {}
+  constructor(
+    @InjectModel('users') private userModel: Model<IUser>,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<IUser> {
     const newUser = new this.userModel(createUserDto);
@@ -34,19 +36,15 @@ export class UsersService {
     return userData;
   }
 
-
-
   async findOneByEmail(email: string): Promise<IUser> {
     const userData = await this.userModel.findOne({ email }).exec();
-  
+
     if (!userData) {
       throw new NotFoundException(`User with email ${email} not found`);
     }
-  
+
     return userData;
   }
-  
-
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<IUser> {
     const existingUser = await this.userModel.findByIdAndUpdate(id, updateUserDto, { new: true }).exec();
@@ -65,6 +63,7 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
 
+
     return deletedUser;
   }
 
@@ -77,5 +76,4 @@ export class UsersService {
 
     return users;
   }
-
 }

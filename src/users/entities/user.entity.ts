@@ -1,28 +1,28 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Admin } from "src/admins/entities/admin.entity";
 import { Employee } from "src/employees/entities/employee.entity";
-import * as argon2  from 'argon2'
+import * as argon2 from 'argon2';
+import { SchemaTypes, Types } from "mongoose";
 
-@Schema({ timestamps: true , discriminatorKey: 'role' })
+@Schema({ timestamps: true, discriminatorKey: 'role' })
 export class User {
-  @Prop({ required: true  , type:String , enum:[Admin.name,Employee.name]})
+  @Prop({ required: true, type: String, enum: [Admin.name, Employee.name] })
   role: string;
 
-
-  @Prop({ required: true  })
+  @Prop({ required: true })
   firstName: string;
 
   @Prop({ required: true })
   lastName: string;
 
-  @Prop({ required: true , unique:true})
+  @Prop({ required: true, unique: true })
   email: string;
 
   @Prop({ required: true })
   phone: string;
 
   @Prop({ required: true })
-  adress: string;
+  address: string;
 
   @Prop({ required: true })
   password: string;
@@ -30,10 +30,10 @@ export class User {
   @Prop()
   refreshToken: string;
 
-
+  @Prop([{type:SchemaTypes.ObjectId,ref:"tasks"}]) 
+  tasks: Types.ObjectId[];
 }
 
-export const userSchema = SchemaFactory.createForClass(User).pre('save',
-async function(){
-  this.password=await argon2.hash(this.password)
-})
+export const UserSchema = SchemaFactory.createForClass(User).pre('save', async function () {
+  this.password = await argon2.hash(this.password);
+});

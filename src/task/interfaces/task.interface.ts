@@ -4,6 +4,8 @@ export interface ITask extends Document{
     readonly duration:string
     readonly status:string
     readonly project:string
+    readonly user:string
+
 
 
 

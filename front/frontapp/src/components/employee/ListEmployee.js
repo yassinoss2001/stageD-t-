@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table, Modal, Form, Input, notification } from 'antd';
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2'; 
 import { Footer } from 'antd/es/layout/layout';
 import { Navbar } from '../../layouts/Navbar';
 import employeeService from '../../services/employeeService';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import axiosApi from '../../config/axios';
+
 
 export const ListEmployee = () => {
   const [allEmployees, setAllEmployees] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentEmployee, setCurrentEmployee] = useState(null);
   const [form] = Form.useForm();
-
-  const fetchEmployees = async () => {
-    try {
-      const res = await employeeService.findAllEmployees();
-      setAllEmployees(res.data.data);
-    } catch (err) {
-      console.log(err, "errr");
-    }
-  };
+  
+  const findallEmployee=()=>{
+    axiosApi.get("http://localhost:4000/users/role?role=Employee").then((res)=>{
+        console.log(res,"all employee");
+        setAllEmployees(res.data.data)
+    })
+}
+useEffect(()=>{
+    findallEmployee()
+},[])
 
   const handleDelete = async (id) => {
     try {
@@ -43,7 +46,7 @@ export const ListEmployee = () => {
           timer: 1500,
           showConfirmButton: false,
         });
-        fetchEmployees();
+        findallEmployee();
       }
     } catch (err) {
       Swal.fire({
@@ -69,7 +72,7 @@ export const ListEmployee = () => {
         message: 'Success',
         description: 'Employee updated successfully',
       });
-      fetchEmployees();
+      findallEmployee();
       setIsModalOpen(false);
     } catch (err) {
       notification.error({
@@ -80,8 +83,8 @@ export const ListEmployee = () => {
   };
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+    findallEmployee();
+  }, []); 
 
   const columns = [
     {

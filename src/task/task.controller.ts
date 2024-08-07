@@ -6,7 +6,7 @@ import { ITask } from './interfaces/task.interface';
 import { ApiTags } from '@nestjs/swagger/dist/decorators/api-use-tags.decorator';
 
 @Controller('task')
-@ApiTags("task")
+@ApiTags('task')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
@@ -47,7 +47,7 @@ export class TaskController {
   }
 
   @Get(':id')
-  async findOne(@Res() response, @Param('id') id: string): Promise<ITask> {
+  async findOne(@Res() response, @Param('id') id: string) {
     try {
       const task = await this.taskService.findOne(id);
       return response.status(HttpStatus.OK).json({
@@ -104,6 +104,25 @@ export class TaskController {
   async findByProject(@Res() response, @Param('projectId') projectId: string) {
     try {
       const tasks = await this.taskService.findByProject(projectId);
+      return response.status(HttpStatus.OK).json({
+        message: 'Tasks found successfully',
+        status: HttpStatus.OK,
+        data: tasks,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
+        status: HttpStatus.NOT_FOUND,
+        data: null,
+      });
+    }
+  }
+
+
+  @Get('by-user/:userId')
+  async findByUser(@Res() response, @Param('userId') userId: string) {
+    try {
+      const tasks = await this.taskService.findTaskByUserId(userId);
       return response.status(HttpStatus.OK).json({
         message: 'Tasks found successfully',
         status: HttpStatus.OK,

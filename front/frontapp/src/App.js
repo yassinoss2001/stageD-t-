@@ -17,6 +17,7 @@ import { ListTask } from "./components/tasks/ListTask";
 import { ListType } from "./components/types/ListType";
 import { ListEmployee } from "./components/employee/ListEmployee";
 import ProfileInfo from "./components/auth/ProfileInfo"; // Default import
+import UserTasks from "./components/tasks/UserTasks";
 
 
 
@@ -46,7 +47,10 @@ function App() {
         <Route path="/listtypes" element={<ListType />} />
         <Route path="/listemployee" element={<ListEmployee />} />
         <Route path="/profileinfo" element={<ProfileInfo />} /> {/* Use lowercase route path */}
+        <Route path="/usertasks" element={<UserTasks />} /> {/* Use lowercase route path */}
 
+
+        
 
 
 

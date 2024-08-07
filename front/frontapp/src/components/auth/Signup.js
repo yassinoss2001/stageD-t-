@@ -34,7 +34,7 @@ export const Signup = () => {
         showConfirmButton: false,
         timer: 1500,
       });
-      // Clear form fields
+     
       setRole("");
       setFirstName("");
       setLastName("");
@@ -43,6 +43,7 @@ export const Signup = () => {
       setAdress("");
       setPassword("");
     } catch (err) {
+      console.error('Error adding employee:', err);  
       notification.error({
         message: 'Error',
         description: 'Failed to add employee',

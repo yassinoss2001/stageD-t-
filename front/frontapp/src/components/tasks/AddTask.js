@@ -4,10 +4,14 @@ import { Navbar } from '../../layouts/Navbar';
 import Select from 'react-select';
 import projectService from '../../services/projectService';
 import taskService from '../../services/taskService';
+import employeeService from '../../services/employeeService';
 import Swal from 'sweetalert2';
 
 export const AddTask = () => {
   const [allProjects, setAllProjects] = useState([]);
+  const [allEmployees, setAllEmployees] = useState([]);
+  const [projectOptions, setProjectOptions] = useState([]);
+  const [employeeOptions, setEmployeeOptions] = useState([]);
 
   const fetchProjects = async () => {
     try {
@@ -18,28 +22,44 @@ export const AddTask = () => {
     }
   };
 
-  const [filteredProjects, setFilteredProjects] = useState([]);
+  const fetchEmployees = async () => {
+    try {
+      const res = await employeeService.findAllEmployees();
+      setAllEmployees(res.data.data);
+    } catch (err) {
+      console.log(err, "errr");
+    }
+  };
 
   useEffect(() => {
     fetchProjects();
+    fetchEmployees();
   }, []);
 
   useEffect(() => {
-    setFilteredProjects(
-      allProjects?.map((res) => {
-        return {
-          label: res.name,
-          value: res._id,
-        };
-      })
+    setProjectOptions(
+      allProjects?.map((res) => ({
+        label: res.name,
+        value: res._id,
+      }))
     );
   }, [allProjects]);
+
+  useEffect(() => {
+    setEmployeeOptions(
+      allEmployees?.map((res) => ({
+        label: `${res.firstName} ${res.lastName}`,
+        value: res._id,
+      }))
+    );
+  }, [allEmployees]);
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("");
   const [duration, setDuration] = useState("");
   const [project, setProject] = useState("");
+  const [employee, setEmployee] = useState("");
 
   const taskAdd = async () => {
     let data = {
@@ -48,21 +68,27 @@ export const AddTask = () => {
       status: status,
       duration: duration,
       project: project,
+      user: employee, 
     };
 
     try {
       const res = await taskService.addTask(data);
-      console.log(data, "dataaaaaaaaaaa");
-      console.log(res, "resssssssss");
-      if(res.status===201){
-
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Task has been added successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });}
+      if(res.status === 201){
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Task has been added successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        // Clear form fields
+        setName("");
+        setDescription("");
+        setStatus("");
+        setDuration("");
+        setProject("");
+        setEmployee("");
+      }
     } catch (err) {
       console.log(err, "resssssssss");
     }
@@ -100,6 +126,7 @@ export const AddTask = () => {
                           onChange={(e) => setName(e.target.value)} 
                           className="form-control" 
                           placeholder="Task Name" 
+                          value={name}
                           required 
                           data-error="Please enter the task name" 
                         />
@@ -111,6 +138,7 @@ export const AddTask = () => {
                           onChange={(e) => setDescription(e.target.value)} 
                           className="form-control" 
                           placeholder="Description" 
+                          value={description}
                           required 
                           data-error="Please enter the task description" 
                         />
@@ -120,6 +148,7 @@ export const AddTask = () => {
                         <select
                           className="form-control"
                           onChange={(e) => setStatus(e.target.value)}
+                          value={status}
                         >
                           <option value="" disabled>Select status</option>
                           <option value="in progress">in progress</option>
@@ -134,6 +163,7 @@ export const AddTask = () => {
                           id="duration" 
                           className="form-control" 
                           placeholder="Duration" 
+                          value={duration}
                           required 
                           data-error="Please enter the task duration" 
                         />
@@ -141,8 +171,17 @@ export const AddTask = () => {
                       </div>
                       <div className="col-md-12 col-sm-12 col-xs-12">
                         <Select
-                          options={filteredProjects}
+                          options={projectOptions}
                           onChange={(e) => setProject(e?.value)}
+                          placeholder="Select Project"
+                        />
+                        <div className="help-block with-errors" />
+                      </div>
+                      <div className="col-md-12 col-sm-12 col-xs-12">
+                        <Select
+                          options={employeeOptions}
+                          onChange={(e) => setEmployee(e?.value)}
+                          placeholder="Assign to Employee"
                         />
                         <div className="help-block with-errors" />
                       </div>

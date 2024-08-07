@@ -48,7 +48,7 @@ export class CreateUserDto {
   })
   @IsString()
   @IsNotEmpty()
-  adresse: string;
+  adress: string;
 
   @ApiProperty({
     type:String,

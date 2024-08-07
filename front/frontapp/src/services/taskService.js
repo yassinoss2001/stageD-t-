@@ -14,14 +14,19 @@ const deleteTask = async (id) => {
   return await axiosApi.delete(`${TASK_ENDPOINT}/${id}`);
 };
 
-// Add the updateTask method
 const updateTask = async (id, taskData) => {
   return await axiosApi.patch(`${TASK_ENDPOINT}/${id}`, taskData);
 };
+
+const findTasksByUserId = async (userId) => {
+  return await axiosApi.get(`${TASK_ENDPOINT}/by-user/${userId}`);
+};
+
 
 export default {
   findAllTasks,
   addTask,
   deleteTask,
   updateTask,
+  findTasksByUserId
 };
