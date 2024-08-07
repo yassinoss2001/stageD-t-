@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Table, Modal, Form,  notification, Select } from 'antd';
+import { Button, Table, Modal, Form, notification, Select } from 'antd';
 import { Footer } from 'antd/es/layout/layout';
 import { Navbar } from '../../layouts/Navbar';
 import taskService from '../../services/taskService';
@@ -18,7 +18,6 @@ const UserTasks = () => {
       }, []);
 
   const [userTasks, setUserTasks] = useState([]);
-  const [allProjects, setAllProjects] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTask, setCurrentTask] = useState(null);
   const [form] = Form.useForm();
