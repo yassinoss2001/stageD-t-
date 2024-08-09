@@ -17,6 +17,9 @@ export class Permission {
 
   @Prop({type:SchemaTypes.ObjectId,ref:'types',required:true})
   type: Types.ObjectId
+
+  @Prop({type: SchemaTypes.ObjectId, ref: 'users', required: true}) 
+  user: Types.ObjectId;
 }
 
 export const permissionSchema = SchemaFactory.createForClass(Permission);

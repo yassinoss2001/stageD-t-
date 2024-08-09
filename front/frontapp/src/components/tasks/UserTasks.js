@@ -4,18 +4,12 @@ import { Footer } from 'antd/es/layout/layout';
 import { Navbar } from '../../layouts/Navbar';
 import taskService from '../../services/taskService';
 import { EditOutlined } from '@ant-design/icons';
+import { useParams } from 'react-router-dom';
 
 const { Option } = Select;
 
 const UserTasks = () => {
-
-    const [auth, setAuth] = useState({});
-
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        setAuth(user);
-        console.log("User data from localStorage:", user);
-      }, []);
+  const {id}=useParams()
 
   const [userTasks, setUserTasks] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -24,7 +18,7 @@ const UserTasks = () => {
 
   const fetchTasks = async () => {
     try {
-      const res = await taskService.findTasksByUserId(`${auth?.user._id}`);
+      const res = await taskService.findTasksByUserId(id);
       setUserTasks(res.data.data);
     } catch (err) {
       console.log(err, "Error fetching tasks");

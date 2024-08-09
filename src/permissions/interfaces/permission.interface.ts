@@ -4,6 +4,8 @@ export interface IPermission extends Document{
     readonly dateFin:string
     readonly status:string
     readonly type:string
+    readonly user:string
+
 
 
     

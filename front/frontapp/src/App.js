@@ -16,8 +16,10 @@ import { ListProject } from "./components/projects/ListProject";
 import { ListTask } from "./components/tasks/ListTask";
 import { ListType } from "./components/types/ListType";
 import { ListEmployee } from "./components/employee/ListEmployee";
-import ProfileInfo from "./components/auth/ProfileInfo"; // Default import
+import ProfileInfo from "./components/auth/ProfileInfo"; 
 import UserTasks from "./components/tasks/UserTasks";
+import  Projectdetails  from "./components/projects/Projectdetails";
+import  UserPermissions  from "./components/permissions/UserPermissions";
 
 
 
@@ -32,7 +34,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/add-categories" element={<AddCategory />} />
-        <Route path="/add-permissions" element={<AddPermission />} />
+        <Route path="/add-permissions/:id" element={<AddPermission />} />
         <Route path="/about" element={<About />} />
         <Route path="/add-projects" element={<AddProject />} />
         <Route path="/contact" element={<Contact />} />
@@ -47,7 +49,11 @@ function App() {
         <Route path="/listtypes" element={<ListType />} />
         <Route path="/listemployee" element={<ListEmployee />} />
         <Route path="/profileinfo" element={<ProfileInfo />} /> {/* Use lowercase route path */}
-        <Route path="/usertasks" element={<UserTasks />} /> {/* Use lowercase route path */}
+        <Route path="/usertasks/:id" element={<UserTasks />} /> {/* Use lowercase route path */}
+        <Route path="/projectdetails/:id" element={<Projectdetails />} /> {/* Use lowercase route path */}
+        <Route path="/userpermissions/:id" element={<UserPermissions />} /> {/* Use lowercase route path */}
+
+
 
 
         

@@ -1,7 +1,35 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import logoapp from '../assets/logo.png'
+import authService from '../services/authService';
+
 
 export const Navbar = () => {
+  const [auth, setAuth] = useState({});
+  const navigate = useNavigate();
+
+
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    setAuth(user);
+    console.log("User data from localStorage:", user);
+  }, []);
+
+
+  const handleLogout = async () => {
+    try {
+      if (auth?.user?._id && auth?.token) { 
+        await authService.logout(auth.user._id, auth.token); 
+      }
+      localStorage.removeItem('user');
+      setAuth(null);
+      navigate('/login');
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+  
   return (
     <>
       <header className="header-one">
@@ -46,18 +74,29 @@ export const Navbar = () => {
                     <div className="logo">
                       {/* Brand */}
                       <Link className="navbar-brand page-scroll white-logo" to="/">
-                        <img src="img/logo/logo3.png" alt="Logo" />
+                        <img src={`${logoapp}`} alt="Logo" />
                       </Link>
                       <Link className="navbar-brand page-scroll black-logo" to="/">
                         <img src="img/logo/logo.png" alt="Logo" />
-                      </Link>
+                      </Link> 
                     </div>
                     {/* logo end */}
                   </div>
                   
                   <div className="col-md-9 col-sm-9">
                     <div className="header-right-link">
-                      <Link className="s-menu" to="/login">Login</Link>
+                      {
+                        !auth ? (
+                          <Link className="s-menu" to="/login">Login</Link>
+                       
+                        ):
+                        (
+                          ""
+                      
+                         
+                        )
+                      }
+                     
                     </div>
                     
                     {/* mainmenu start */}
@@ -73,7 +112,6 @@ export const Navbar = () => {
                                 <li><Link to="/add-categories">Add Categories</Link></li>
                                 <li><Link to="/add-projects">Add Projects</Link></li>
                                 <li><Link to="/add-tasks">Add Tasks</Link></li>
-                                <li><Link to="/add-permissions">Add Permissions</Link></li>
                                 <li><Link to="/add-types">Add Types</Link></li>
                                 <li><Link to="/listcategories">List Categories</Link></li> {/* New link */}
                                 <li><Link to="/listprojects">List Projects</Link></li> {/* New link */}
@@ -84,6 +122,22 @@ export const Navbar = () => {
                               </ul>
                             </li>
                             <li><Link to="/contact">Contact</Link></li>
+                            {
+                              auth ? (
+                                <li><a className="pages" href="#">{auth?.user?.firstName}</a> {/* Changed "Pages" to "Dashboard" */}
+                                <ul className="sub-menu">
+                                  <li><Link to={`/add-permissions/${auth?.user?._id}`}>Add Permission</Link></li>
+                                  <li><Link to={`/userpermissions/${auth?.user?._id}`}>Permissions List</Link></li>
+                                  <li><Link to={`/usertasks/${auth?.user?._id}`}>Tasks List</Link></li>
+                                  <li><button onClick={handleLogout} className="s-menu" style={{ border: 'none', background: 'none', color: 'red' }}>Logout</button></li>
+                                  
+                                </ul>
+                              </li>
+
+                              )
+                              :""
+                            }
+                          
                           </ul>
                         </div>
                       </div>

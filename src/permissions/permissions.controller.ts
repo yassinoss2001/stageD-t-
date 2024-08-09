@@ -118,4 +118,22 @@ export class PermissionsController {
     }
   }
 
+  @Get('by-user/:userId')
+  async findByUser(@Res() response, @Param('userId') userId: string) {
+    try {
+      const tasks = await this.permissionsService.findPermissionsByUserId(userId);
+      return response.status(HttpStatus.OK).json({
+        message: 'Tasks found successfully',
+        status: HttpStatus.OK,
+        data: tasks,
+      });
+    } catch (error) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: error.message,
+        status: HttpStatus.NOT_FOUND,
+        data: null,
+      });
+    }
+  }
+
 }

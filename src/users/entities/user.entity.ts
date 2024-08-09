@@ -32,7 +32,13 @@ export class User {
 
   @Prop([{type:SchemaTypes.ObjectId,ref:"tasks"}]) 
   tasks: Types.ObjectId[];
+
+  @Prop([{type:SchemaTypes.ObjectId,ref:"permissions"}]) 
+  permissions: Types.ObjectId[];
+
 }
+
+
 
 export const UserSchema = SchemaFactory.createForClass(User).pre('save', async function () {
   this.password = await argon2.hash(this.password);

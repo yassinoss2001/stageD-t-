@@ -20,11 +20,16 @@ const updateProject = async (id, project) => {
   return await axiosApi.patch(`${PROJECT_ENDPOINT}/${id}`, project);
 };
 
+const findProjectById = async (id) => {
+  return await axiosApi.get(`${PROJECT_ENDPOINT}/${id}`);
+};
+
 const projectService = {
   findAllProjects,
   addProject,
   deleteProject,
   updateProject,
+  findProjectById
 };
 
 export default projectService;

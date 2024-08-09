@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString ,IsNotEmpty} from "class-validator";
+import { Types } from "mongoose";
 
 export class CreatePermissionDto {
 
@@ -45,4 +46,7 @@ export class CreatePermissionDto {
     @IsNotEmpty()
     type: string;
   static type: any;
+
+  @IsNotEmpty() 
+  readonly user: Types.ObjectId;
 }

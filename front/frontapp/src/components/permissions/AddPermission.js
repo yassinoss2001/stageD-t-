@@ -5,11 +5,22 @@ import { Footer } from '../../layouts/Footer';
 import { Navbar } from '../../layouts/Navbar';
 import permissionService from '../../services/permissionService';
 import typeService from '../../services/typeService';
+import { useParams } from 'react-router-dom';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 export const AddPermission = () => {
+  const {id} =useParams()
+
+  const [auth, setAuth] = useState({});
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    setAuth(user);
+    console.log("User data from localStorage:", user);
+  }, []);
+
+
   const [form] = Form.useForm();
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,18 +45,22 @@ export const AddPermission = () => {
         reason: values.reason,
         dateDeb: values.dateDeb.format('YYYY-MM-DD'),
         dateFin: values.dateFin.format('YYYY-MM-DD'),
-        status: values.status,
+        status: "hold",
         type: values.type,
+        user: id
+
+
       });
       Swal.fire({
         title: 'Success',
         text: 'Permission added successfully',
         icon: 'success',
-        timer: 1500, // Auto-dismiss after 1.5 seconds
-        showConfirmButton: false, // Hide the confirm button
+        timer: 1500, 
+        showConfirmButton: false, 
       });
       form.resetFields();
     } catch (err) {
+      console.log("Error adding permission:", err);
       Swal.fire({
         title: 'Error',
         text: 'Failed to add permission',
@@ -105,15 +120,15 @@ export const AddPermission = () => {
                         label="End Date"
                         rules={[{ required: true, message: 'Please select the end date' }]}
                       >
-                        <DatePicker format="YYYY-MM-DD" />
+                        <DatePicker format="YYYY-MM-DD" width="100%" />
                       </Form.Item>
-                      <Form.Item
+                    {/*   <Form.Item
                         name="status"
                         label="Status"
                         rules={[{ required: true, message: 'Please enter the status' }]}
                       >
                         <Input placeholder="Status" />
-                      </Form.Item>
+                      </Form.Item> */}
                       <Form.Item
                         name="type"
                         label="Type"
