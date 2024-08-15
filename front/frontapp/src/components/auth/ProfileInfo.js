@@ -6,10 +6,10 @@ import Swal from 'sweetalert2';
 import employeeService from '../../services/employeeService';
 
 const ProfileInfo = () => {
-  const [auth, setAuth] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
 
+  const [auth, setAuth] = useState({});
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     setAuth(user);

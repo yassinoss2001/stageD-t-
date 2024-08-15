@@ -22,7 +22,7 @@ export class User {
   phone: string;
 
   @Prop({ required: true })
-  address: string;
+  adress: string;
 
   @Prop({ required: true })
   password: string;

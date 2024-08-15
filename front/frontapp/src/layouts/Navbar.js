@@ -10,6 +10,7 @@ export const Navbar = () => {
 
 
 
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     setAuth(user);
@@ -107,7 +108,9 @@ export const Navbar = () => {
                             <li><Link className="pages" to="/">Home</Link></li>
                             <li><Link to="/about">About us</Link></li>
                             <li><Link className="pages" to="/projects">Projects</Link></li> {/* Link to /projects */}
-                            <li><a className="pages" href="#">Dashboard</a> {/* Changed "Pages" to "Dashboard" */}
+                            {auth?.user?.role==="Admin" ?
+                            (<>
+ <li><a className="pages" href="#">Dashboard</a> {/* Changed "Pages" to "Dashboard" */}
                               <ul className="sub-menu">
                                 <li><Link to="/add-categories">Add Categories</Link></li>
                                 <li><Link to="/add-projects">Add Projects</Link></li>
@@ -121,14 +124,27 @@ export const Navbar = () => {
                                 <li><Link to="/listemployee">List Employee</Link></li> {/* New link */}
                               </ul>
                             </li>
+                            </>) : (
+                              ""
+                            ) } 
+                           
                             <li><Link to="/contact">Contact</Link></li>
                             {
                               auth ? (
                                 <li><a className="pages" href="#">{auth?.user?.firstName}</a> {/* Changed "Pages" to "Dashboard" */}
                                 <ul className="sub-menu">
+                                  {auth?.user?.role==="Employee" ?(
+                                    <>
                                   <li><Link to={`/add-permissions/${auth?.user?._id}`}>Add Permission</Link></li>
                                   <li><Link to={`/userpermissions/${auth?.user?._id}`}>Permissions List</Link></li>
                                   <li><Link to={`/usertasks/${auth?.user?._id}`}>Tasks List</Link></li>
+                                    </>
+                                  ):(
+                                    ""
+                                  )}
+                                
+
+                                  <li><Link to='/profileinfo'>Profile</Link></li>
                                   <li><button onClick={handleLogout} className="s-menu" style={{ border: 'none', background: 'none', color: 'red' }}>Logout</button></li>
                                   
                                 </ul>

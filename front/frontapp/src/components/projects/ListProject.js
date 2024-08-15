@@ -23,7 +23,6 @@ export const ListProject = () => {
     try {
       const res = await projectService.findAllProjects();
       setAllProjects(res.data.data);
-      console.log(res.data.data)
     } catch (err) {
       console.log(err, "errr");
     }
@@ -90,25 +89,38 @@ export const ListProject = () => {
     setIsModalOpen(true);
   };
 
-  const handleUpdate = async (values) => {
-    try {
-      if (fileList.length > 0) {
-        values.file = fileList[0].name; // You might need to adjust this based on your backend expectations
-      }
-      values.category = selectedCategory;
-      await projectService.updateProject(currentProject._id, values);
-      notification.success({
-        message: 'Success',
-        description: 'Project updated successfully',
+  const handleUpdate = () => {
+    form
+      .validateFields()
+      .then(async (values) => {
+        const formData = new FormData();
+        Object.keys(values).forEach((key) => {
+          formData.append(key, values[key]);
+        });
+        formData.append('category', selectedCategory);
+  
+        if (fileList.length > 0) {
+          formData.append('file', fileList[0]);
+        }
+
+        try {
+          await projectService.updateProject(currentProject._id, formData);
+          notification.success({
+            message: 'Success',
+            description: 'Project updated successfully',
+          });
+          fetchProjects();
+          setIsModalOpen(false);
+        } catch (err) {
+          notification.error({
+            message: 'Error',
+            description: 'Failed to update project',
+          });
+        }
+      })
+      .catch((info) => {
+        console.log('Validate Failed:', info);
       });
-      fetchProjects(); // Refetch projects to update the list
-      setIsModalOpen(false);
-    } catch (err) {
-      notification.error({
-        message: 'Error',
-        description: 'Failed to update project',
-      });
-    }
   };
 
   const columns = [
@@ -116,7 +128,9 @@ export const ListProject = () => {
       title: 'File',
       dataIndex: 'file',
       key: 'file',
-      render:(text, record)=> <img src={`http://localhost:4000/app/file/projects/${record?.file}`} width="50px" height="50px" />
+      render: (text, record) => (
+        <img src={`http://localhost:4000/app/file/projects/${record?.file}`} width="50px" height="50px" alt="project file" />
+      ),
     },
     {
       title: 'Name',
@@ -138,17 +152,11 @@ export const ListProject = () => {
       dataIndex: 'duration',
       key: 'duration',
     },
-  
     {
       title: 'Category',
       dataIndex: 'category',
-
-      render: (text, record) =><>{record?.category?.name}</>
-         
-       
-      
+      render: (text, record) => <>{record?.category?.name}</>,
     },
-   
     {
       title: 'Update',
       render: (text, record) => (
@@ -156,7 +164,7 @@ export const ListProject = () => {
           type="primary"
           shape="circle"
           icon={<EditOutlined />}
-          onClick={() => handleEdit(record)}
+          onClick={() => handleEdit(record)} 
         />
       ),
     },
@@ -186,7 +194,7 @@ export const ListProject = () => {
               <div className="col-md-12 col-sm-12 col-xs-12" style={{ marginTop: "40px" }}>
                 <div className="contact-form">
                   <div className="row">
-                    <h2 className='text-center mb-5'>List Projects</h2>
+                    <h2 className="text-center mb-5">List Projects</h2>
                     <div id="contactForm" className="contact-form" style={{ marginTop: "20px" }}>
                       <Table dataSource={allProjects} columns={columns} rowKey="_id" />
                     </div>
@@ -211,7 +219,7 @@ export const ListProject = () => {
             rules={[{ required: true, message: 'Please upload a file' }]}
           >
             <Upload
-              fileList={[]}
+              fileList={fileList}
               beforeUpload={(file) => {
                 setFileList([file]);
                 return false;
@@ -260,7 +268,7 @@ export const ListProject = () => {
               onChange={handleCategoryChange}
               value={selectedCategory}
             >
-              {allCategories.map(category => (
+              {allCategories.map((category) => (
                 <Option key={category._id} value={category._id}>
                   {category.name}
                 </Option>

@@ -4,19 +4,21 @@ import { Footer } from 'antd/es/layout/layout';
 import { Navbar } from '../../layouts/Navbar';
 import employeeService from '../../services/employeeService';
 import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+
 
 export const Signup = () => {
-  const [role, setRole] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [adress, setAdress] = useState("");
   const [password, setPassword] = useState("");
+const navigate = useNavigate()
 
   const handleSignup = async () => {
     const employeeData = {
-      role,
+      role:"Employee",
       firstName,
       lastName,
       email,
@@ -26,7 +28,8 @@ export const Signup = () => {
     };
 
     try {
-      await employeeService.addEmployee(employeeData);
+     
+      const res = await employeeService.addEmployee(employeeData);
       Swal.fire({
         position: 'center',
         icon: 'success',
@@ -35,13 +38,16 @@ export const Signup = () => {
         timer: 1500,
       });
      
-      setRole("");
       setFirstName("");
       setLastName("");
       setEmail("");
       setPhone("");
       setAdress("");
       setPassword("");
+      console.log("resss",res)
+      if(res.status===201){
+        navigate('/login')
+      }
     } catch (err) {
       console.error('Error adding employee:', err);  
       notification.error({
@@ -79,17 +85,7 @@ export const Signup = () => {
               <div className="signup-form">
                 <h2 className="text-center mb-5">Sign up</h2>
                 <div className="row">
-                  <div className="col-md-12 col-sm-12 col-xs-12">
-                    <input
-                      type="text"
-                      id="role"
-                      className="form-control"
-                      placeholder="Role"
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      required
-                    />
-                  </div>
+             
                   <div className="col-md-12 col-sm-12 col-xs-12">
                     <input
                       type="text"
